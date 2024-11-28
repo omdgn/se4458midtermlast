@@ -58,7 +58,7 @@ This project is an API for a fictitious airline company where admins can manage 
 
 2) Project Presentation
 
-Output images: https://drive.google.com/drive/folders/1yEDzd0YauPKRX5uOXGkkbiUABOdPRcnD?usp=drive_link
+*** Output images: https://drive.google.com/drive/folders/1yEDzd0YauPKRX5uOXGkkbiUABOdPRcnD?usp=drive_link ***
 
 Firstly, i created "swagger.json" for documentation. It outlines paths like /api/admin/flights (for inserting flights) and /api/tickets/buy (for ticket booking). Each path includes information about the required parameters, request body, and potential responses.
 
