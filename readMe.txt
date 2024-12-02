@@ -25,6 +25,8 @@ This project is an API for a fictitious airline company where admins can manage 
 
 ## API Endpoints
 
+url: https://fast-tor-46069-c25313d54f69.herokuapp.com/
+
 ### Admin Endpoints (Require Authentication)
 - **POST /api/admin/flights**: Insert a new flight.
 - **POST /api/admin/creports**: Generate flight reports.
@@ -108,6 +110,7 @@ I set up the connection to the MySQL database using mysql2
                 password: 'se4458midterm',
                 database: 'airplane',
             });
+
   
 For Heroku Error Procfile and .env
 
