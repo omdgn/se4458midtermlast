@@ -1,205 +1,227 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-      "title": "Airline Company API Documentation",
-      "version": "1.0.0",
-      "description": "This is the API documentation for the Airline Company project. Admins can manage flights, and users can perform ticketing operations via a mobile app."
-    },
-    "servers": [
-      {
-        "url": "http://localhost:3000",
-        "description": "Local Development Server"
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "SE4458 Midterm API",
+    "description": "Comprehensive API documentation for the SE4458 Midterm project"
+  },
+  "host": "fast-tor-46069-c25313d54f69.herokuapp.com",
+  "basePath": "/",
+  "schemes": ["https"],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "summary": "User login",
+        "description": "Authenticate a user using email and password",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "schema": {
+              "$ref": "#/definitions/AuthResponse"
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        }
       }
-    ],
-    "tags": [
-      { "name": "Admin", "description": "Endpoints for admin operations" },
-      { "name": "Mobile App", "description": "Endpoints for mobile app interactions" },
-      { "name": "Authentication", "description": "Endpoints for authentication" }
-    ],
-    "paths": {
-      "/api/auth/login": {
-        "post": {
-          "tags": ["Authentication"],
-          "summary": "Admin Login",
-          "description": "Authenticate admin users and return a JWT token.",
-          "requestBody": {
+    },
+    "/auth/register": {
+      "post": {
+        "summary": "User registration",
+        "description": "Register a new user",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
             "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "username": { "type": "string", "example": "admin" },
-                    "password": { "type": "string", "example": "password" }
-                  }
-                }
-              }
-            }
-          },
-          "responses": {
-            "200": {
-              "description": "Authentication successful",
-              "content": {
-                "application/json": {
-                  "example": { "token": "eyJhbGciOiJIUzI1NiIsIn..." }
-                }
-              }
-            },
-            "401": {
-              "description": "Authentication failed",
-              "content": {
-                "application/json": {
-                  "example": { "error": "Invalid username or password" }
-                }
-              }
+            "schema": {
+              "$ref": "#/definitions/RegisterRequest"
             }
           }
+        ],
+        "responses": {
+          "201": { "description": "User registered successfully" },
+          "400": { "description": "Invalid input" }
         }
-      },
-      "/api/admin/flights": {
-        "post": {
-          "tags": ["Admin"],
-          "summary": "Insert a new flight",
-          "description": "Add a new flight to the system with details like origin, destination, dates, and capacity.",
-          "security": [
-            {
-              "BearerAuth": []
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "origin": { "type": "string", "example": "New York" },
-                    "destination": { "type": "string", "example": "Los Angeles" },
-                    "available_dates": {
-                      "type": "array",
-                      "items": { "type": "string", "example": "2024-12-01" }
-                    },
-                    "days_of_week": {
-                      "type": "array",
-                      "items": { "type": "string", "example": "Monday" }
-                    },
-                    "capacity": { "type": "integer", "example": 150 }
-                  },
-                  "required": ["origin", "destination", "available_dates", "capacity"]
-                }
-              }
-            }
-          },
-          "responses": {
-            "201": {
-              "description": "Flight added successfully",
-              "content": {
-                "application/json": {
-                  "example": { "status": "Flight added successfully" }
-                }
-              }
-            },
-            "500": {
-              "description": "Database error",
-              "content": {
-                "application/json": {
-                  "example": { "error": "Error message" }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/flights": {
-        "get": {
-          "tags": ["Mobile App"],
-          "summary": "Query available flights",
-          "description": "Search for flights based on date, origin, and destination. Includes pagination.",
-          "parameters": [
-            { "name": "date", "in": "query", "required": true, "schema": { "type": "string", "example": "2024-12-01" } },
-            { "name": "origin", "in": "query", "required": true, "schema": { "type": "string", "example": "New York" } },
-            { "name": "destination", "in": "query", "required": true, "schema": { "type": "string", "example": "Los Angeles" } },
-            { "name": "page", "in": "query", "schema": { "type": "integer", "example": 1 } },
-            { "name": "limit", "in": "query", "schema": { "type": "integer", "example": 10 } }
-          ],
-          "responses": {
-            "200": {
-              "description": "List of available flights",
-              "content": {
-                "application/json": {
-                  "example": {
-                    "flights": [
-                      { "id": 1, "origin": "New York", "destination": "Los Angeles", "capacity": 150 }
-                    ]
-                  }
-                }
-              }
-            },
-            "500": {
-              "description": "Database error",
-              "content": {
-                "application/json": {
-                  "example": { "error": "Error message" }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/api/tickets/buy": {
-        "post": {
-          "tags": ["Mobile App"],
-          "summary": "Buy a ticket",
-          "description": "Book a ticket for a flight if seats are available.",
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "date": { "type": "string", "example": "2024-12-01" },
-                    "origin": { "type": "string", "example": "New York" },
-                    "destination": { "type": "string", "example": "Los Angeles" },
-                    "passenger_name": { "type": "string", "example": "John Doe" }
-                  },
-                  "required": ["date", "origin", "destination", "passenger_name"]
-                }
-              }
-            }
-          },
-          "responses": {
-            "201": {
-              "description": "Ticket booked successfully",
-              "content": {
-                "application/json": {
-                  "example": {
-                    "status": "Ticket booked successfully",
-                    "ticket_id": 123456,
-                    "passenger_name": "John Doe"
-                  }
-                }
-              }
-            },
-            "400": {
-              "description": "No available flights",
-              "content": {
-                "application/json": {
-                  "example": { "error": "Flight is fully booked or there is no flight" }
-                }
+      }
+    },
+    "/flights": {
+      "get": {
+        "summary": "Get all flights",
+        "description": "Retrieve a list of available flights",
+        "responses": {
+          "200": {
+            "description": "List of flights",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Flight"
               }
             }
           }
         }
       }
     },
-    "components": {
-      "securitySchemes": {
-        "BearerAuth": {
-          "type": "http",
-          "scheme": "bearer",
-          "bearerFormat": "JWT"
+    "/flights/{flightId}": {
+      "get": {
+        "summary": "Get flight details",
+        "description": "Retrieve details of a specific flight",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "flightId",
+            "required": true,
+            "type": "string",
+            "description": "ID of the flight to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Flight details",
+            "schema": {
+              "$ref": "#/definitions/Flight"
+            }
+          },
+          "404": { "description": "Flight not found" }
+        }
+      }
+    },
+    "/tickets": {
+      "post": {
+        "summary": "Book a ticket",
+        "description": "Book a ticket for a specific flight",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TicketRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Ticket successfully booked",
+            "schema": {
+              "$ref": "#/definitions/Ticket"
+            }
+          },
+          "400": { "description": "Invalid input" }
+        }
+      }
+    },
+    "/tickets/{ticketId}": {
+      "get": {
+        "summary": "Get ticket details",
+        "description": "Retrieve details of a specific ticket",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "ticketId",
+            "required": true,
+            "type": "string",
+            "description": "ID of the ticket to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ticket details",
+            "schema": {
+              "$ref": "#/definitions/Ticket"
+            }
+          },
+          "404": { "description": "Ticket not found" }
+        }
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "summary": "Get all users",
+        "description": "Retrieve a list of all registered users (Admin only)",
+        "responses": {
+          "200": {
+            "description": "List of users",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
         }
       }
     }
+  },
+  "definitions": {
+    "LoginRequest": {
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "password": { "type": "string" }
+      },
+      "required": ["email", "password"]
+    },
+    "RegisterRequest": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "password": { "type": "string" }
+      },
+      "required": ["name", "email", "password"]
+    },
+    "AuthResponse": {
+      "type": "object",
+      "properties": {
+        "token": { "type": "string" },
+        "user": { "$ref": "#/definitions/User" }
+      }
+    },
+    "Flight": {
+      "type": "object",
+      "properties": {
+        "flightId": { "type": "string" },
+        "origin": { "type": "string" },
+        "destination": { "type": "string" },
+        "departureTime": { "type": "string", "format": "date-time" },
+        "arrivalTime": { "type": "string", "format": "date-time" }
+      }
+    },
+    "TicketRequest": {
+      "type": "object",
+      "properties": {
+        "flightId": { "type": "string" },
+        "userId": { "type": "string" },
+        "seatNumber": { "type": "string" }
+      },
+      "required": ["flightId", "userId", "seatNumber"]
+    },
+    "Ticket": {
+      "type": "object",
+      "properties": {
+        "ticketId": { "type": "string" },
+        "flightId": { "type": "string" },
+        "userId": { "type": "string" },
+        "seatNumber": { "type": "string" }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" }
+      }
+    }
   }
+}
