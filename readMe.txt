@@ -1,3 +1,6 @@
+
+!!! IMPORTANT ANNOUNCEMENT: I ​​stopped IP and Service operations due to fees. I recommend you to try the project locally. !!!
+
 # Airline Company API Project and Project Presentation
 
 1)Airline Company API Project
